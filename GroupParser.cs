@@ -1,0 +1,8 @@
+﻿namespace ilcatsParser
+{
+    class GroupParser
+    {
+
+
+    }
+}

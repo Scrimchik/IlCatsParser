@@ -8,10 +8,8 @@ namespace ilcatsParser
         {
             var document = await HtmlLoader.LoadAndParseHtmlAsync("/toyota/?function=getModels&market=EU");
 
-            await ModelParser.ParseCarModelAsync(document); 
-            
-            
-            
+            await ModelParser.ParseAsync(document); 
+              
         }
     }
 }

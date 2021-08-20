@@ -13,7 +13,7 @@ namespace ilcatsParser
         public static async Task ParseAsync(IHtmlDocument document) 
         {
             var listTr = document.QuerySelector("tbody").Children;
-            //Console.WriteLine("                        Комплентация машины                    ");
+            Console.WriteLine("    Комплектация машины                    ");
             List<string> values = AddFields(listTr.FirstOrDefault().Children);
             int countOfComplectations = listTr.Length - 1;
             ComplectationModel[] complectationModels = new ComplectationModel[countOfComplectations];
@@ -27,21 +27,19 @@ namespace ilcatsParser
             }
             foreach (var model in complectationModels)
             {
-                Console.WriteLine(model.Complectation);
-                Console.WriteLine(model.Date);
-                Console.WriteLine(model.Engine);
-                Console.WriteLine(model.Body);
+                Console.WriteLine("    Комплектация: {0}", model.Complectation);
+                Console.WriteLine("    Комплектация: {0}", model.Date);
+                Console.WriteLine("    Комплектация: {0}", model.Engine);
+                Console.WriteLine("    Комплектация: {0}", model.Body);
+                Console.WriteLine("    Комплектация: {0}", model.Grade);
+                Console.WriteLine("    Комплектация: {0}", model.ATMOrMTM);
+                Console.WriteLine("    Комплектация: {0}", model.GearShiftType);
+                Console.WriteLine("    Комплектация: {0}", model.DriversPosition);
+                Console.WriteLine("    Комплектация: {0}", model.NoOfDoors);
+                Console.WriteLine("    Комплектация: {0}", model.Destination);
                 Console.WriteLine("--------------------------------------------");
+                var do
             }
-            //foreach (var tr in listTr)
-            //{
-            //    List<string> values = new List<string>();
-            //    foreach (var value in tr.FirstElementChild.Children)
-            //    {
-            //        values.Add(value.TextContent);
-            //        Console.WriteLine(value.TextContent);
-            //    }
-            //}
         }
 
         private static List<string> AddFields(IHtmlCollection<IElement> thElements)
@@ -78,6 +76,26 @@ namespace ilcatsParser
                 case "GRADE":
                     for (int i = 0; i < models.Length; i++)
                         models[i].Grade = FillTheFields(indexOfTdElement, trElements)[i] ?? " ";
+                    break;
+                case "ATM,MTM":
+                    for (int i = 0; i < models.Length; i++)
+                        models[i].ATMOrMTM = FillTheFields(indexOfTdElement, trElements)[i] ?? " ";
+                    break;
+                case "GEAR SHIFT TYPE":
+                    for (int i = 0; i < models.Length; i++)
+                        models[i].GearShiftType = FillTheFields(indexOfTdElement, trElements)[i] ?? " ";
+                    break;
+                case "DRIVER'S POSITION":
+                    for (int i = 0; i < models.Length; i++)
+                        models[i].DriversPosition = FillTheFields(indexOfTdElement, trElements)[i] ?? " ";
+                    break;
+                case "NO.OF DOORS":
+                    for (int i = 0; i < models.Length; i++)
+                        models[i].NoOfDoors = FillTheFields(indexOfTdElement, trElements)[i] ?? " ";
+                    break;
+                case "DESTINATION 1":
+                    for (int i = 0; i < models.Length; i++)
+                        models[i].Destination = FillTheFields(indexOfTdElement, trElements)[i] ?? " ";
                     break;
             }
         }
