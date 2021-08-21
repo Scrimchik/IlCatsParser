@@ -1,5 +1,8 @@
-﻿namespace ilcatsParser.Ef.Models
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace ilcatsParser.Ef.Models
 {
+    [Index(nameof(Name), IsUnique = true)]
     class Subgroup
     {
         public int Id { get; set; }

@@ -5,16 +5,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ilcatsParser.Ef.Models;
+using ilcatsParser.Ef.Models.ComplectationFields;
+using ilcatsParser.Ef;
 
 namespace ilcatsParser
 {
     class ComplectationParser
     {
-        public static async Task ParseAsync(IHtmlDocument document) 
+        public static async Task<List<ComplectationModel>> ParseAsync(IHtmlDocument document) 
         {
+            Console.WriteLine(" ---------------------------------------------------");
             var listTr = document.QuerySelector("tbody").Children;
-            Console.WriteLine("    Комплектация машины                    ");
+
             List<string> values = AddFields(listTr.FirstOrDefault().Children);
+
             int countOfComplectations = listTr.Length - 1;
             ComplectationModel[] complectationModels = new ComplectationModel[countOfComplectations];
 
@@ -22,24 +26,31 @@ namespace ilcatsParser
                 complectationModels[i] = new ComplectationModel();
 
             for (int i = 0; i < values.Count; i++)
-            {
                 DetectionFieldsAndAddValues(values[i], i, complectationModels, listTr);
-            }
+
             foreach (var model in complectationModels)
             {
-                Console.WriteLine("    Комплектация: {0}", model.Complectation);
-                Console.WriteLine("    Комплектация: {0}", model.Date);
-                Console.WriteLine("    Комплектация: {0}", model.Engine);
-                Console.WriteLine("    Комплектация: {0}", model.Body);
-                Console.WriteLine("    Комплектация: {0}", model.Grade);
-                Console.WriteLine("    Комплектация: {0}", model.ATMOrMTM);
-                Console.WriteLine("    Комплектация: {0}", model.GearShiftType);
-                Console.WriteLine("    Комплектация: {0}", model.DriversPosition);
-                Console.WriteLine("    Комплектация: {0}", model.NoOfDoors);
-                Console.WriteLine("    Комплектация: {0}", model.Destination);
                 var documentOfGroups = await HtmlLoader.LoadAndParseHtmlAsync(model.GroupUrl);
-                await GroupParser.ParseAsync(documentOfGroups);
-                Console.WriteLine("--------------------------------------------");
+                model.Groups = await GroupParser.ParseAsync(documentOfGroups);
+            }
+
+            await AddComplentationsToDbAsync(complectationModels.ToList());
+            return complectationModels.ToList();
+        }
+
+        private static async Task AddComplentationsToDbAsync(List<ComplectationModel> complectations)
+        {
+            using (AppDbContext db = new AppDbContext())
+            {
+                db.ComplectationModels.AddRange(complectations);
+                try
+                {
+                    await db.SaveChangesAsync();
+                }
+                catch (Exception)
+                {
+                    //try catch needet to catch errors about added duplicate info
+                }
             }
         }
 
@@ -70,35 +81,35 @@ namespace ilcatsParser
                     break;
                 case "ENGINE 1":
                     for (int i = 0; i < models.Length; i++)
-                        models[i].Engine = FillTheFields(indexOfTdElement, trElements)[i];
+                        models[i].Engine = new Engine { Value = FillTheFields(indexOfTdElement, trElements)[i] };
                     break;
                 case "BODY":
                     for (int i = 0; i < models.Length; i++)
-                        models[i].Body = FillTheFields(indexOfTdElement, trElements)[i];
+                        models[i].Body = new Body { Value = FillTheFields(indexOfTdElement, trElements)[i] };
                     break;
                 case "GRADE":
                     for (int i = 0; i < models.Length; i++)
-                        models[i].Grade = FillTheFields(indexOfTdElement, trElements)[i];
+                        models[i].Grade = new Grade { Value = FillTheFields(indexOfTdElement, trElements)[i] };
                     break;
                 case "ATM,MTM":
                     for (int i = 0; i < models.Length; i++)
-                        models[i].ATMOrMTM = FillTheFields(indexOfTdElement, trElements)[i];
+                        models[i].ATMOrMTM = new ATMOrMTM { Value = FillTheFields(indexOfTdElement, trElements)[i] };
                     break;
                 case "GEAR SHIFT TYPE":
                     for (int i = 0; i < models.Length; i++)
-                        models[i].GearShiftType = FillTheFields(indexOfTdElement, trElements)[i];
+                        models[i].GearShiftType = new GearShiftType { Value = FillTheFields(indexOfTdElement, trElements)[i] };
                     break;
                 case "DRIVER'S POSITION":
                     for (int i = 0; i < models.Length; i++)
-                        models[i].DriversPosition = FillTheFields(indexOfTdElement, trElements)[i];
+                        models[i].DriversPosition = new DriversPosition { Value = FillTheFields(indexOfTdElement, trElements)[i] };
                     break;
                 case "NO.OF DOORS":
                     for (int i = 0; i < models.Length; i++)
-                        models[i].NoOfDoors = FillTheFields(indexOfTdElement, trElements)[i];
+                        models[i].NoOfDoors = new NoOfDoors { Value = FillTheFields(indexOfTdElement, trElements)[i] };
                     break;
                 case "DESTINATION 1":
                     for (int i = 0; i < models.Length; i++)
-                        models[i].Destination = FillTheFields(indexOfTdElement, trElements)[i];
+                        models[i].Destination = new Destination { Value = FillTheFields(indexOfTdElement, trElements)[i] };
                     break;
             }
         }
