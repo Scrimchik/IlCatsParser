@@ -37,8 +37,9 @@ namespace ilcatsParser
                 Console.WriteLine("    Комплектация: {0}", model.DriversPosition);
                 Console.WriteLine("    Комплектация: {0}", model.NoOfDoors);
                 Console.WriteLine("    Комплектация: {0}", model.Destination);
+                var documentOfGroups = await HtmlLoader.LoadAndParseHtmlAsync(model.GroupUrl);
+                await GroupParser.ParseAsync(documentOfGroups);
                 Console.WriteLine("--------------------------------------------");
-                var do
             }
         }
 
@@ -58,44 +59,46 @@ namespace ilcatsParser
             switch (field)
             {
                 case "Complectation":
-                    for (int i = 0; i < models.Length; i++)
-                        models[i].Complectation = FillTheFields(indexOfTdElement, trElements)[i] ?? " ";
+                    for (int i = 0; i < models.Length; i++) {
+                        models[i].Complectation = FillTheFields(indexOfTdElement, trElements)[i];
+                        models[i].GroupUrl = GetGroupsUrl(trElements)[i];
+                    }
                     break;
                 case "Date":
                     for (int i = 0; i < models.Length; i++)
-                        models[i].Date = FillTheFields(indexOfTdElement, trElements)[i] ?? " ";
+                        models[i].Date = FillTheFields(indexOfTdElement, trElements)[i];
                     break;
                 case "ENGINE 1":
                     for (int i = 0; i < models.Length; i++)
-                        models[i].Engine = FillTheFields(indexOfTdElement, trElements)[i] ?? " ";
+                        models[i].Engine = FillTheFields(indexOfTdElement, trElements)[i];
                     break;
                 case "BODY":
                     for (int i = 0; i < models.Length; i++)
-                        models[i].Body = FillTheFields(indexOfTdElement, trElements)[i] ?? " ";
+                        models[i].Body = FillTheFields(indexOfTdElement, trElements)[i];
                     break;
                 case "GRADE":
                     for (int i = 0; i < models.Length; i++)
-                        models[i].Grade = FillTheFields(indexOfTdElement, trElements)[i] ?? " ";
+                        models[i].Grade = FillTheFields(indexOfTdElement, trElements)[i];
                     break;
                 case "ATM,MTM":
                     for (int i = 0; i < models.Length; i++)
-                        models[i].ATMOrMTM = FillTheFields(indexOfTdElement, trElements)[i] ?? " ";
+                        models[i].ATMOrMTM = FillTheFields(indexOfTdElement, trElements)[i];
                     break;
                 case "GEAR SHIFT TYPE":
                     for (int i = 0; i < models.Length; i++)
-                        models[i].GearShiftType = FillTheFields(indexOfTdElement, trElements)[i] ?? " ";
+                        models[i].GearShiftType = FillTheFields(indexOfTdElement, trElements)[i];
                     break;
                 case "DRIVER'S POSITION":
                     for (int i = 0; i < models.Length; i++)
-                        models[i].DriversPosition = FillTheFields(indexOfTdElement, trElements)[i] ?? " ";
+                        models[i].DriversPosition = FillTheFields(indexOfTdElement, trElements)[i];
                     break;
                 case "NO.OF DOORS":
                     for (int i = 0; i < models.Length; i++)
-                        models[i].NoOfDoors = FillTheFields(indexOfTdElement, trElements)[i] ?? " ";
+                        models[i].NoOfDoors = FillTheFields(indexOfTdElement, trElements)[i];
                     break;
                 case "DESTINATION 1":
                     for (int i = 0; i < models.Length; i++)
-                        models[i].Destination = FillTheFields(indexOfTdElement, trElements)[i] ?? " ";
+                        models[i].Destination = FillTheFields(indexOfTdElement, trElements)[i];
                     break;
             }
         }
@@ -107,6 +110,17 @@ namespace ilcatsParser
             {
                 if (complectation != trElements.FirstOrDefault())
                     result.Add(complectation.Children[indexOfTdElement].TextContent);    
+            }
+            return result;
+        }
+
+        private static List<string> GetGroupsUrl(IHtmlCollection<IElement> trElements)
+        {
+            List<string> result = new List<string>();
+            foreach(var complectation in trElements)
+            {
+                if (complectation != trElements.FirstOrDefault())
+                    result.Add(complectation.FirstElementChild.FirstElementChild.FirstElementChild.GetAttribute("href"));
             }
             return result;
         }

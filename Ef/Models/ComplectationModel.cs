@@ -13,5 +13,6 @@
         public string DriversPosition { get; set; }
         public string NoOfDoors { get; set; }
         public string Destination { get; set; }
+        public string GroupUrl { get; set; }
     }
 }
