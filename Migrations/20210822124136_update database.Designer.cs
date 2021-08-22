@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ilcatsParser.Ef;
 
 namespace ilcatsParser.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210822124136_update database")]
+    partial class updatedatabase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -76,13 +78,9 @@ namespace ilcatsParser.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Value")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Value")
-                        .IsUnique()
-                        .HasFilter("[Value] IS NOT NULL");
 
                     b.ToTable("ATMOrMTMs");
                 });
@@ -95,13 +93,9 @@ namespace ilcatsParser.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Value")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Value")
-                        .IsUnique()
-                        .HasFilter("[Value] IS NOT NULL");
 
                     b.ToTable("Bodies");
                 });
@@ -114,13 +108,9 @@ namespace ilcatsParser.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Value")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Value")
-                        .IsUnique()
-                        .HasFilter("[Value] IS NOT NULL");
 
                     b.ToTable("Destinations");
                 });
@@ -133,13 +123,9 @@ namespace ilcatsParser.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Value")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Value")
-                        .IsUnique()
-                        .HasFilter("[Value] IS NOT NULL");
 
                     b.ToTable("DriversPositions");
                 });
@@ -152,13 +138,9 @@ namespace ilcatsParser.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Value")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Value")
-                        .IsUnique()
-                        .HasFilter("[Value] IS NOT NULL");
 
                     b.ToTable("Engines");
                 });
@@ -171,13 +153,9 @@ namespace ilcatsParser.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Value")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Value")
-                        .IsUnique()
-                        .HasFilter("[Value] IS NOT NULL");
 
                     b.ToTable("GearShiftTypes");
                 });
@@ -190,13 +168,9 @@ namespace ilcatsParser.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Value")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Value")
-                        .IsUnique()
-                        .HasFilter("[Value] IS NOT NULL");
 
                     b.ToTable("Grades");
                 });
@@ -209,13 +183,9 @@ namespace ilcatsParser.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Value")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Value")
-                        .IsUnique()
-                        .HasFilter("[Value] IS NOT NULL");
 
                     b.ToTable("NoOfDoors");
                 });
@@ -233,7 +203,7 @@ namespace ilcatsParser.Migrations
                     b.Property<int?>("BodyId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CarSubmodelId")
+                    b.Property<int?>("CarSubmodelId")
                         .HasColumnType("int");
 
                     b.Property<string>("Complectation")
@@ -353,9 +323,7 @@ namespace ilcatsParser.Migrations
 
                     b.HasOne("ilcatsParser.Ef.Models.CarSubmodel", "CarSubmodel")
                         .WithMany("ComplectationModels")
-                        .HasForeignKey("CarSubmodelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CarSubmodelId");
 
                     b.HasOne("ilcatsParser.Ef.Models.ComplectationFields.Destination", "Destination")
                         .WithMany("Complectations")

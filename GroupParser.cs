@@ -11,25 +11,26 @@ namespace ilcatsParser
     class GroupParser
     {
 
-        public static async Task<List<Group>> ParseAsync(IHtmlDocument document)
+        public static async Task ParseAndSaveAsync(IHtmlDocument document)
         {
-            Console.WriteLine("  ---------------------------------------------------");
-            var groupNames = document.All.Where(t => t.ClassName == "name");
+            Console.WriteLine("   ---------------------------------------------------");
+            var groupElements = document.All.Where(t => t.ClassName == "name");
             List<Group> groups = new List<Group>();
-            foreach (var g in groupNames)
+
+            foreach (var g in groupElements)
             {
                 string subroupUrl = g.FirstElementChild.GetAttribute("href");
-                var documentOfSubgroup = await HtmlLoader.LoadAndParseHtmlAsync(subroupUrl);
+                //var documentOfSubgroup = await HtmlLoader.LoadAndParseHtmlAsync(subroupUrl);
 
                 string groupName = g.FirstElementChild.TextContent;
                 Group group = new Group { Name = groupName };
 
-                group.Subgroups = await SubgroupParser.ParseAsync(documentOfSubgroup);
+                //group.Subgroups = await SubgroupParser.ParseAsync(documentOfSubgroup);
 
-                groups.Add(group); 
+                groups.Add(group);
             }
             await AddGroupsToDb(groups);
-            return groups;
+            await LoadSubgroupsAsync(groups);
         }
 
         private static async Task AddGroupsToDb(List<Group> groups)
@@ -45,6 +46,16 @@ namespace ilcatsParser
                 {
                     //try catch needet to catch errors about added duplicate info
                 }
+            }
+        }
+
+        private static async Task LoadSubgroupsAsync(List<Group> groups)
+        {
+            foreach (var group in groups)
+            {
+                string subgroupsUrl = group.SubgroupsUrl;
+                var documentOfSubroups = await HtmlLoader.LoadAndParseHtmlAsync(subgroupsUrl);
+                await SubgroupParser.ParseAndSaveAsync(documentOfSubroups);
             }
         }
     }

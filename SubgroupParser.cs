@@ -10,17 +10,16 @@ namespace ilcatsParser
 {
     class SubgroupParser
     {
-        public static async Task<List<Subgroup>> ParseAsync(IHtmlDocument document)
+        public static async Task ParseAndSaveAsync(IHtmlDocument document)
         {
-            Console.WriteLine("   ---------------------------------------------------");
-            var subroupNames = document.All.Where(t => t.ClassName == "name");
+            Console.WriteLine("    ---------------------------------------------------");
+            var subroupElements = document.All.Where(t => t.ClassName == "name");
             List<Subgroup> subgroups = new List<Subgroup>();
 
-            foreach (var name in subroupNames)
-                subgroups.Add(new Subgroup { Name = name.TextContent });
+            foreach (var subgroup in subroupElements)
+                subgroups.Add(new Subgroup { Name = subgroup.TextContent });
 
             await AddSubgroupsToDbAsync(subgroups);
-            return subgroups;
         }
 
         private static async Task AddSubgroupsToDbAsync(List<Subgroup> subgroups)

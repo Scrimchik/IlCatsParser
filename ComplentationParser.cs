@@ -1,41 +1,43 @@
 ﻿using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
+using ilcatsParser.Ef;
+using ilcatsParser.Ef.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ilcatsParser.Ef.Models;
-using ilcatsParser.Ef.Models.ComplectationFields;
-using ilcatsParser.Ef;
 
 namespace ilcatsParser
 {
     class ComplectationParser
     {
-        public static async Task<List<ComplectationModel>> ParseAsync(IHtmlDocument document) 
+        public static async Task ParseAndSaveAsync(IHtmlDocument document, int carSubmodelId)
         {
-            Console.WriteLine(" ---------------------------------------------------");
-            var listTr = document.QuerySelector("tbody").Children;
+            Console.WriteLine("  -----------------------------------------------");
+            var complectationElements = document.QuerySelector("tbody").Children;
+            var fieldsElements = complectationElements.FirstOrDefault().Children;
+            List<string> fileds = GetFields(fieldsElements);
 
-            List<string> values = AddFields(listTr.FirstOrDefault().Children);
-
-            int countOfComplectations = listTr.Length - 1;
-            ComplectationModel[] complectationModels = new ComplectationModel[countOfComplectations];
+            ComplectationModel[] complectationModels = new ComplectationModel[complectationElements.Length - 1];
 
             for (int i = 0; i < complectationModels.Length; i++)
-                complectationModels[i] = new ComplectationModel();
+                complectationModels[i] = new ComplectationModel() { CarSubmodelId = carSubmodelId };
 
-            for (int i = 0; i < values.Count; i++)
-                DetectionFieldsAndAddValues(values[i], i, complectationModels, listTr);
-
-            foreach (var model in complectationModels)
-            {
-                var documentOfGroups = await HtmlLoader.LoadAndParseHtmlAsync(model.GroupUrl);
-                model.Groups = await GroupParser.ParseAsync(documentOfGroups);
-            }
+            for (int i = 0; i < fileds.Count; i++)
+                await FillComplentationHelper.FillComplectationAsync(fileds[i], i, complectationModels, complectationElements);
 
             await AddComplentationsToDbAsync(complectationModels.ToList());
-            return complectationModels.ToList();
+            await LoadGroupAsync(complectationModels);
+        }
+
+        private static List<string> GetFields(IHtmlCollection<IElement> thElements)
+        {
+            List<string> values = new List<string>();
+            foreach (var thValue in thElements)
+            {
+                values.Add(thValue.TextContent);
+            }
+            return values;
         }
 
         private static async Task AddComplentationsToDbAsync(List<ComplectationModel> complectations)
@@ -49,91 +51,20 @@ namespace ilcatsParser
                 }
                 catch (Exception)
                 {
+
                     //try catch needet to catch errors about added duplicate info
                 }
             }
         }
 
-        private static List<string> AddFields(IHtmlCollection<IElement> thElements)
+        private static async Task LoadGroupAsync(IEnumerable<ComplectationModel> complectationModels)
         {
-            List<string> values = new List<string>();
-            foreach (var thValue in thElements)
+            foreach (var complectationModel in complectationModels)
             {
-                values.Add(thValue.TextContent);
+                string pageOfGroupsUrl = complectationModel.GroupUrl;
+                var documentOfGroups = await HtmlLoader.LoadAndParseHtmlAsync(pageOfGroupsUrl);
+                await GroupParser.ParseAndSaveAsync(documentOfGroups);
             }
-            return values;
-        }
-
-        private static void DetectionFieldsAndAddValues(string field, int indexOfTdElement, 
-            ComplectationModel[] models, IHtmlCollection<IElement> trElements)
-        {
-            switch (field)
-            {
-                case "Complectation":
-                    for (int i = 0; i < models.Length; i++) {
-                        models[i].Complectation = FillTheFields(indexOfTdElement, trElements)[i];
-                        models[i].GroupUrl = GetGroupsUrl(trElements)[i];
-                    }
-                    break;
-                case "Date":
-                    for (int i = 0; i < models.Length; i++)
-                        models[i].Date = FillTheFields(indexOfTdElement, trElements)[i];
-                    break;
-                case "ENGINE 1":
-                    for (int i = 0; i < models.Length; i++)
-                        models[i].Engine = new Engine { Value = FillTheFields(indexOfTdElement, trElements)[i] };
-                    break;
-                case "BODY":
-                    for (int i = 0; i < models.Length; i++)
-                        models[i].Body = new Body { Value = FillTheFields(indexOfTdElement, trElements)[i] };
-                    break;
-                case "GRADE":
-                    for (int i = 0; i < models.Length; i++)
-                        models[i].Grade = new Grade { Value = FillTheFields(indexOfTdElement, trElements)[i] };
-                    break;
-                case "ATM,MTM":
-                    for (int i = 0; i < models.Length; i++)
-                        models[i].ATMOrMTM = new ATMOrMTM { Value = FillTheFields(indexOfTdElement, trElements)[i] };
-                    break;
-                case "GEAR SHIFT TYPE":
-                    for (int i = 0; i < models.Length; i++)
-                        models[i].GearShiftType = new GearShiftType { Value = FillTheFields(indexOfTdElement, trElements)[i] };
-                    break;
-                case "DRIVER'S POSITION":
-                    for (int i = 0; i < models.Length; i++)
-                        models[i].DriversPosition = new DriversPosition { Value = FillTheFields(indexOfTdElement, trElements)[i] };
-                    break;
-                case "NO.OF DOORS":
-                    for (int i = 0; i < models.Length; i++)
-                        models[i].NoOfDoors = new NoOfDoors { Value = FillTheFields(indexOfTdElement, trElements)[i] };
-                    break;
-                case "DESTINATION 1":
-                    for (int i = 0; i < models.Length; i++)
-                        models[i].Destination = new Destination { Value = FillTheFields(indexOfTdElement, trElements)[i] };
-                    break;
-            }
-        }
-
-        private static List<string> FillTheFields(int indexOfTdElement, IHtmlCollection<IElement> trElements)
-        {
-            List<string> result = new List<string>();
-            foreach (var complectation in trElements)
-            {
-                if (complectation != trElements.FirstOrDefault())
-                    result.Add(complectation.Children[indexOfTdElement].TextContent);    
-            }
-            return result;
-        }
-
-        private static List<string> GetGroupsUrl(IHtmlCollection<IElement> trElements)
-        {
-            List<string> result = new List<string>();
-            foreach(var complectation in trElements)
-            {
-                if (complectation != trElements.FirstOrDefault())
-                    result.Add(complectation.FirstElementChild.FirstElementChild.FirstElementChild.GetAttribute("href"));
-            }
-            return result;
         }
     }
 }
