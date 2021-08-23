@@ -148,6 +148,7 @@ namespace ilcatsParser
                     }
                     catch (Exception ex)
                     {
+                        //try catch needed to catch an exception when adding existing data
                     }
                 }
             }

@@ -1,19 +1,59 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ilcatsParser.Ef
 {
     static class DbHelper
     {
-        public static async Task AddListAsync<T>(List<T> elements)
+        public static bool IsFirstLoading { get; set; }
+
+        public static async Task AddAsync<T>(List<T> elements)
+        {
+            if (IsFirstLoading)
+                await AddToDbCollectionAsync(elements);
+            else
+                await AddToDbOneByOneElementsAsync(elements);
+        }
+
+        private static async Task AddToDbCollectionAsync<T>(List<T> elements)
         {
             using (AppDbContext db = new AppDbContext())
             {
-                foreach (var element in elements)
+                foreach (var element in elements.Distinct())
                     db.Entry(element).State = EntityState.Added;
+                try
+                {
+                    await db.SaveChangesAsync();
+                }
+                catch (Exception)
+                {
 
-                await db.SaveChangesAsync();
+                    //needed to catch an exception when adding existing data
+                }
+
+            }
+        }
+
+        private static async Task AddToDbOneByOneElementsAsync<T>(List<T> elements)
+        {
+            foreach (var element in elements)
+            {
+                using (AppDbContext db = new AppDbContext())
+                {
+                    db.Entry(element).State = EntityState.Added;
+                    try
+                    {
+                        await db.SaveChangesAsync();
+                    }
+                    catch (Exception)
+                    {
+
+                        //needed to catch an exception when adding existing data
+                    }
+                }
             }
         }
     }

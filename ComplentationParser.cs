@@ -26,8 +26,8 @@ namespace ilcatsParser
             for (int i = 0; i < fileds.Count; i++)
                 await FillComplentationHelper.FillComplectationAsync(fileds[i], i, complectationModels, complectationElements);
 
-            await AddComplentationsToDbAsync(complectationModels.ToList());
-            await LoadGroupAsync(complectationModels);
+            await DbHelper.AddAsync(complectationModels.ToList());
+            //await LoadGroupAsync(complectationModels);
         }
 
         private static List<string> GetFields(IHtmlCollection<IElement> thElements)
@@ -38,23 +38,6 @@ namespace ilcatsParser
                 values.Add(thValue.TextContent);
             }
             return values;
-        }
-
-        private static async Task AddComplentationsToDbAsync(List<ComplectationModel> complectations)
-        {
-            using (AppDbContext db = new AppDbContext())
-            {
-                db.ComplectationModels.AddRange(complectations);
-                try
-                {
-                    await db.SaveChangesAsync();
-                }
-                catch (Exception)
-                {
-
-                    //try catch needet to catch errors about added duplicate info
-                }
-            }
         }
 
         private static async Task LoadGroupAsync(IEnumerable<ComplectationModel> complectationModels)

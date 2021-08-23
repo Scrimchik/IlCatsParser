@@ -30,24 +30,8 @@ namespace ilcatsParser
                 carSubmodels.Add(carSubmodel);
             }
 
-            await AddCarSubmodelsToDbAsync(carSubmodels);
+            await DbHelper.AddAsync(carSubmodels);
             await LoadComplentationAsync(carSubmodels);
-        }
-
-        private static async Task AddCarSubmodelsToDbAsync(List<CarSubmodel> carModels)
-        {
-            using (AppDbContext db = new AppDbContext())
-            {
-                db.CarSubmodels.AddRange(carModels);
-                try
-                {
-                    await db.SaveChangesAsync();
-                }
-                catch (Exception)
-                {
-                    //try catch needet to catch errors about added duplicate info
-                }
-            }
         }
 
         private static async Task LoadComplentationAsync(List<CarSubmodel> carSubmodels)

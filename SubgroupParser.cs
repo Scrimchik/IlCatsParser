@@ -19,23 +19,7 @@ namespace ilcatsParser
             foreach (var subgroup in subroupElements)
                 subgroups.Add(new Subgroup { Name = subgroup.TextContent });
 
-            await AddSubgroupsToDbAsync(subgroups);
-        }
-
-        private static async Task AddSubgroupsToDbAsync(List<Subgroup> subgroups)
-        {
-            using (AppDbContext db = new AppDbContext())
-            {
-                db.Subgroups.AddRange(subgroups);
-                try
-                {
-                    await db.SaveChangesAsync();
-                }
-                catch (Exception)
-                {
-                    //try catch needet to catch errors about added duplicate info
-                }
-            }
+            await DbHelper.AddAsync(subgroups);
         }
     }
 }

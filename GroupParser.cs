@@ -29,24 +29,8 @@ namespace ilcatsParser
 
                 groups.Add(group);
             }
-            await AddGroupsToDb(groups);
+            await DbHelper.AddAsync(groups);
             await LoadSubgroupsAsync(groups);
-        }
-
-        private static async Task AddGroupsToDb(List<Group> groups)
-        {
-            using (AppDbContext db = new AppDbContext())
-            {
-                db.Groups.AddRange(groups);
-                try
-                {
-                    await db.SaveChangesAsync();
-                }
-                catch (Exception)
-                {
-                    //try catch needet to catch errors about added duplicate info
-                }
-            }
         }
 
         private static async Task LoadSubgroupsAsync(List<Group> groups)
