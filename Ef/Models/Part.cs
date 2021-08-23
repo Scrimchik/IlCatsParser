@@ -1,12 +1,17 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ilcatsParser.Ef.Models
 {
+    [Index(nameof(Code), IsUnique = true)]
     class Part
     {
+        public int Id { get; set; }
+        public string Code { get; set; }
+        public string Name { get; set; }
+
+        public int SubgroupId { get; set; }
+        public Subgroup Subgroup { get; set; }
+        public List<ComplectationModel> ComplectationModels { get; set; } = new List<ComplectationModel>();
     }
 }

@@ -38,10 +38,10 @@ namespace ilcatsParser.Parsers
             }
 
             await DbHelper.AddAsync(carSubmodels);
-            await LoadComplentationAsync(carSubmodels);
+            await LoadComplentationsAsync(carSubmodels);
         }
 
-        private static async Task LoadComplentationAsync(List<CarSubmodel> carSubmodels)
+        private static async Task LoadComplentationsAsync(List<CarSubmodel> carSubmodels)
         {
             foreach (var carSubmodel in carSubmodels)
             {

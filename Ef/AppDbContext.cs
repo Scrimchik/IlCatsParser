@@ -19,6 +19,7 @@ namespace ilcatsParser.Ef
         public DbSet<NoOfDoors> NoOfDoors { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<Subgroup> Subgroups { get; set; }
+        public DbSet<Part> Parts { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

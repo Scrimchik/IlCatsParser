@@ -1,5 +1,6 @@
 ﻿using ilcatsParser.Ef.Models.ComplectationFields;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ilcatsParser.Ef.Models
@@ -31,5 +32,6 @@ namespace ilcatsParser.Ef.Models
 
         public int CarSubmodelId { get; set; }
         public CarSubmodel CarSubmodel { get; set; }
+        public List<Part> Parts { get; set; }
     }
 }

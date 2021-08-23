@@ -11,7 +11,7 @@ namespace ilcatsParser
             var document = await HtmlLoader.LoadAndParseHtmlAsync("/toyota/?function=getModels&market=EU");
 
             DbHelper.IsFirstLoading = false;
-            await CarModelParser.ParseAndSaveAsync(document);          
+            await CarModelParser.ParseAndSaveAsync(document);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ilcatsParser.Ef.Models
 {
@@ -7,6 +8,8 @@ namespace ilcatsParser.Ef.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        [NotMapped]
+        public string PartsUrl { get; set; }
 
         public int GroupId { get; set; }
         public Group Group { get; set; }

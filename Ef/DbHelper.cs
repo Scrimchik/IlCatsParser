@@ -1,12 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ilcatsParser.Ef
 {
-    static class DbHelper
+    class DbHelper
     {
         public static bool IsFirstLoading { get; set; }
 
@@ -22,15 +21,14 @@ namespace ilcatsParser.Ef
         {
             using (AppDbContext db = new AppDbContext())
             {
-                foreach (var element in elements.Distinct())
+                foreach (var element in elements)
                     db.Entry(element).State = EntityState.Added;
                 try
                 {
                     await db.SaveChangesAsync();
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-
                     //needed to catch an exception when adding existing data
                 }
 
@@ -48,9 +46,8 @@ namespace ilcatsParser.Ef
                     {
                         await db.SaveChangesAsync();
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-
                         //needed to catch an exception when adding existing data
                     }
                 }

@@ -3,6 +3,7 @@ using AngleSharp.Html.Dom;
 using ilcatsParser.Ef;
 using ilcatsParser.Ef.Models;
 using ilcatsParser.Parsers.ParserHelpers;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,7 +61,16 @@ namespace ilcatsParser.Parsers
             {
                 string pageOfGroupsUrl = complectationModel.GroupUrl;
                 var documentOfGroups = await HtmlLoader.LoadAndParseHtmlAsync(pageOfGroupsUrl);
-                await GroupParser.ParseAndSaveAsync(documentOfGroups);
+                int complectationId = complectationModel.Id == 0 ? await GetComplectationIdAsync(complectationModel.Complectation) : complectationModel.Id;
+                await GroupParser.ParseAndSaveAsync(documentOfGroups, complectationId);
+            }
+        }
+
+        private static async Task<int> GetComplectationIdAsync(string complectation)
+        {
+            using (AppDbContext db = new AppDbContext())
+            {
+                return await db.ComplectationModels.Where(t => t.Complectation == complectation).Select(t => t.Id).FirstOrDefaultAsync();
             }
         }
     }

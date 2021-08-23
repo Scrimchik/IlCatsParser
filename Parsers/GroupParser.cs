@@ -11,9 +11,9 @@ namespace ilcatsParser.Parsers
 {
     class GroupParser
     {
-        public static async Task ParseAndSaveAsync(IHtmlDocument document)
+        public static async Task ParseAndSaveAsync(IHtmlDocument document, int complectationId)
         {
-            Console.WriteLine("   ---------------------------------------------------");
+            Console.WriteLine("   -----------------------------------------------");
             var groupElements = document.All.Where(t => t.ClassName == "name");
             List<Group> groups = new List<Group>();
 
@@ -27,17 +27,17 @@ namespace ilcatsParser.Parsers
             }
 
             await DbHelper.AddAsync(groups);
-            await LoadSubgroupsAsync(groups);
+            await LoadSubgroupsAsync(groups, complectationId);
         }
 
-        private static async Task LoadSubgroupsAsync(List<Group> groups)
+        private static async Task LoadSubgroupsAsync(List<Group> groups, int complectationId)
         {
             foreach (var group in groups)
             {
                 string subgroupsUrl = group.SubgroupsUrl;
                 var documentOfSubroups = await HtmlLoader.LoadAndParseHtmlAsync(subgroupsUrl);
                 int groupId = group.Id == 0 ? await GetGroupIdAsync(group.Name) : group.Id;
-                await SubgroupParser.ParseAndSaveAsync(documentOfSubroups, groupId);
+                await SubgroupParser.ParseAndSaveAsync(documentOfSubroups, groupId, complectationId);
             }
         }
 
