@@ -1,5 +1,4 @@
-﻿using AngleSharp.Dom;
-using AngleSharp.Html.Dom;
+﻿using AngleSharp.Html.Dom;
 using ilcatsParser.Ef;
 using ilcatsParser.Ef.Models;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ilcatsParser
+namespace ilcatsParser.Parsers
 {
     class CarModelParser
     {
@@ -21,7 +20,8 @@ namespace ilcatsParser
             foreach (var carModelElement in carModelElements)
             {
                 string carModelName = carModelElement.Children.FirstOrDefault(t => t.ClassName == "Header").TextContent;
-                IElement carSubmodelElement = carModelElement.Children.FirstOrDefault(t => t.ClassName == "List ");
+                var carSubmodelElement = carModelElement.Children.FirstOrDefault(t => t.ClassName == "List ");
+
                 carModels.Add(new CarModel { Name = carModelName, CarSubmodelsElement = carSubmodelElement });
             }
 

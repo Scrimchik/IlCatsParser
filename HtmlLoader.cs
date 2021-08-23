@@ -10,7 +10,11 @@ namespace ilcatsParser
     {
         private const string baseUrl = "https://www.ilcats.ru/";
 
-
+        /// <summary>
+        /// Go to page, and load htmlDocument, then parse it
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns>Parsed document</returns>
         public static async Task<IHtmlDocument> LoadAndParseHtmlAsync(string url)
         {
             string source;

@@ -2,19 +2,28 @@
 using AngleSharp.Html.Dom;
 using ilcatsParser.Ef;
 using ilcatsParser.Ef.Models;
+using ilcatsParser.Parsers.ParserHelpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ilcatsParser
+namespace ilcatsParser.Parsers
 {
     class ComplectationParser
     {
+        /// <summary>
+        /// Parse complectation elements and save their, and after this go to the next page
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="carSubmodelId"></param>
+        /// <returns></returns>
         public static async Task ParseAndSaveAsync(IHtmlDocument document, int carSubmodelId)
         {
             Console.WriteLine("  -----------------------------------------------");
             var complectationElements = document.QuerySelector("tbody").Children;
+
+            //get first <tr> element, which contains data of fields
             var fieldsElements = complectationElements.FirstOrDefault().Children;
             List<string> fileds = GetFields(fieldsElements);
 
@@ -27,9 +36,14 @@ namespace ilcatsParser
                 await FillComplentationHelper.FillComplectationAsync(fileds[i], i, complectationModels, complectationElements);
 
             await DbHelper.AddAsync(complectationModels.ToList());
-            //await LoadGroupAsync(complectationModels);
+            await LoadGroupAsync(complectationModels);
         }
 
+        /// <summary>
+        /// Get the fields data, to be know what kind of data contains complectation
+        /// </summary>
+        /// <param name="thElements"></param>
+        /// <returns></returns>
         private static List<string> GetFields(IHtmlCollection<IElement> thElements)
         {
             List<string> values = new List<string>();

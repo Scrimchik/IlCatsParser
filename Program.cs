@@ -1,5 +1,5 @@
 ﻿using ilcatsParser.Ef;
-using System.Collections.Generic;
+using ilcatsParser.Parsers;
 using System.Threading.Tasks;
 
 namespace ilcatsParser
@@ -9,10 +9,9 @@ namespace ilcatsParser
         static async Task Main(string[] args)
         {
             var document = await HtmlLoader.LoadAndParseHtmlAsync("/toyota/?function=getModels&market=EU");
+
             DbHelper.IsFirstLoading = false;
-            await CarModelParser.ParseAndSaveAsync(document);
-            
-            await DbHelper.AddAsync(new List<string>());
+            await CarModelParser.ParseAndSaveAsync(document);          
         }
     }
 }

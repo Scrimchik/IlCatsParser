@@ -8,12 +8,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ilcatsParser
+namespace ilcatsParser.Parsers.ParserHelpers
 {
     static class FillComplentationHelper
     {
         private static AppDbContext db = new AppDbContext();
 
+        /// <summary>
+        /// Fills in the complectations fields with values, for example:
+        /// We get in table that contains engine values, and he 3 in a row, we go to switch which save in db this engines and
+        /// fill the array of complectations
+        /// data
+        /// </summary>
+        /// <param name="field">field of complectation</param>
+        /// <param name="indexOfTdElement">column number</param>
+        /// <param name="complectationModels"></param>
+        /// <param name="complectationElements">table of complectations</param>
+        /// <returns></returns>
         public static async Task FillComplectationAsync(string field, int indexOfTdElement,
             ComplectationModel[] complectationModels, IHtmlCollection<IElement> complectationElements)
         {
@@ -137,6 +148,8 @@ namespace ilcatsParser
 
             foreach (var value in values.Distinct())
                 complectationFields.Add(new T() { Value = value });
+            /*It is necessary to add one value to the database, because different complectations may contain the same values,
+             and if add a list wich contains exisitng values, then new ones will not be added*/
             foreach (var item in complectationFields)
             {
                 using (AppDbContext context = new AppDbContext())

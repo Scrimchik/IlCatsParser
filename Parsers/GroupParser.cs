@@ -1,16 +1,16 @@
 ﻿using AngleSharp.Html.Dom;
 using ilcatsParser.Ef;
 using ilcatsParser.Ef.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ilcatsParser
+namespace ilcatsParser.Parsers
 {
     class GroupParser
     {
-
         public static async Task ParseAndSaveAsync(IHtmlDocument document)
         {
             Console.WriteLine("   ---------------------------------------------------");
@@ -19,16 +19,13 @@ namespace ilcatsParser
 
             foreach (var g in groupElements)
             {
-                string subroupUrl = g.FirstElementChild.GetAttribute("href");
-                //var documentOfSubgroup = await HtmlLoader.LoadAndParseHtmlAsync(subroupUrl);
-
+                string subroupsUrl = g.FirstElementChild.GetAttribute("href");
                 string groupName = g.FirstElementChild.TextContent;
-                Group group = new Group { Name = groupName };
-
-                //group.Subgroups = await SubgroupParser.ParseAsync(documentOfSubgroup);
+                Group group = new Group { Name = groupName, SubgroupsUrl = subroupsUrl };
 
                 groups.Add(group);
             }
+
             await DbHelper.AddAsync(groups);
             await LoadSubgroupsAsync(groups);
         }
@@ -39,7 +36,16 @@ namespace ilcatsParser
             {
                 string subgroupsUrl = group.SubgroupsUrl;
                 var documentOfSubroups = await HtmlLoader.LoadAndParseHtmlAsync(subgroupsUrl);
-                await SubgroupParser.ParseAndSaveAsync(documentOfSubroups);
+                int groupId = group.Id == 0 ? await GetGroupIdAsync(group.Name) : group.Id;
+                await SubgroupParser.ParseAndSaveAsync(documentOfSubroups, groupId);
+            }
+        }
+
+        private static async Task<int> GetGroupIdAsync(string groupName)
+        {
+            using (AppDbContext db = new AppDbContext())
+            {
+                return await db.Groups.Where(t => t.Name == groupName).Select(t => t.Id).FirstOrDefaultAsync();
             }
         }
     }
