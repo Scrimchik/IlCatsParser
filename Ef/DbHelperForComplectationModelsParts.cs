@@ -16,11 +16,19 @@ namespace ilcatsParser.Ef
                 List<string> partCodes = FillThePartCodes(parts);
                 List<Part> partsFromDb = await db.Parts.Where(t => partCodes.Contains(t.Code)).ToListAsync();
                 ComplectationModel complectation = await db.ComplectationModels.FindAsync(complectationId);
+
                 foreach (var part in partsFromDb)
-                {
                     part.ComplectationModels.Add(complectation);
+
+                try
+                {
+                    await db.SaveChangesAsync();
                 }
-                await db.SaveChangesAsync();
+                catch (Exception)
+                {
+                    //needed to catch an exception when adding existing data  
+                }
+
             }
             
         }

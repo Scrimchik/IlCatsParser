@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ilcatsParser.Parsers
 {
-    class ComplectationParser
+    class ComplectationsParser
     {
         /// <summary>
         /// Parse complectation elements and save their, and after this go to the next page
@@ -62,7 +62,7 @@ namespace ilcatsParser.Parsers
                 string pageOfGroupsUrl = complectationModel.GroupUrl;
                 var documentOfGroups = await HtmlLoader.LoadAndParseHtmlAsync(pageOfGroupsUrl);
                 int complectationId = complectationModel.Id == 0 ? await GetComplectationIdAsync(complectationModel.Complectation) : complectationModel.Id;
-                await GroupParser.ParseAndSaveAsync(documentOfGroups, complectationId);
+                await GroupsParser.ParseAndSaveAsync(documentOfGroups, complectationId);
             }
         }
 

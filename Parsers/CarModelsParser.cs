@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ilcatsParser.Parsers
 {
-    class CarModelParser
+    class CarModelsParser
     {
         public static async Task ParseAndSaveAsync(IHtmlDocument document) 
         {
@@ -34,7 +34,7 @@ namespace ilcatsParser.Parsers
             foreach (var carModel in carModels)
             {
                 int carModelId = carModel.Id == 0 ? await GetCarModelIdAsync(carModel.Name) : carModel.Id;
-                await CarSubmodelParser.ParseAndSaveAsync(carModel.CarSubmodelsElement, carModelId);
+                await CarSubmodelsParser.ParseAndSaveAsync(carModel.CarSubmodelsElement, carModelId);
             }
         }
 

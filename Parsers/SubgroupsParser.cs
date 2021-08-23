@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ilcatsParser.Parsers
 {
-    class SubgroupParser
+    class SubgroupsParser
     {
         public static async Task ParseAndSaveAsync(IHtmlDocument document, int groupId, int complectationId)
         {

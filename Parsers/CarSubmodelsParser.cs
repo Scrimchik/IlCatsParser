@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ilcatsParser.Parsers
 {
-    class CarSubmodelParser
+    class CarSubmodelsParser
     {
         /// <summary>
         /// Parse car submodels elements and save their, and after this go to the next page
@@ -48,7 +48,7 @@ namespace ilcatsParser.Parsers
                 string pageOfComplentationsUrl = carSubmodel.ComplentationsUrl;
                 var documentOfComplentations = await HtmlLoader.LoadAndParseHtmlAsync(pageOfComplentationsUrl);
                 int carSubmodelId = carSubmodel.Id == 0 ? await GetCarSubmodelIdASync(carSubmodel.ModelCode) : carSubmodel.Id;
-                await ComplectationParser.ParseAndSaveAsync(documentOfComplentations, carSubmodelId);
+                await ComplectationsParser.ParseAndSaveAsync(documentOfComplentations, carSubmodelId);
             }
         }
 

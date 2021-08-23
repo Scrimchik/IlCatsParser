@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ilcatsParser.Parsers
 {
-    class GroupParser
+    class GroupsParser
     {
         public static async Task ParseAndSaveAsync(IHtmlDocument document, int complectationId)
         {
@@ -37,7 +37,7 @@ namespace ilcatsParser.Parsers
                 string subgroupsUrl = group.SubgroupsUrl;
                 var documentOfSubroups = await HtmlLoader.LoadAndParseHtmlAsync(subgroupsUrl);
                 int groupId = group.Id == 0 ? await GetGroupIdAsync(group.Name) : group.Id;
-                await SubgroupParser.ParseAndSaveAsync(documentOfSubroups, groupId, complectationId);
+                await SubgroupsParser.ParseAndSaveAsync(documentOfSubroups, groupId, complectationId);
             }
         }
 

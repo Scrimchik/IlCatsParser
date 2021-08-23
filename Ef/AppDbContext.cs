@@ -20,6 +20,7 @@ namespace ilcatsParser.Ef
         public DbSet<Group> Groups { get; set; }
         public DbSet<Subgroup> Subgroups { get; set; }
         public DbSet<Part> Parts { get; set; }
+        public DbSet<Subpart> Subparts { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

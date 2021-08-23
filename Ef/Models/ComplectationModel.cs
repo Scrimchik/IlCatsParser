@@ -33,5 +33,6 @@ namespace ilcatsParser.Ef.Models
         public int CarSubmodelId { get; set; }
         public CarSubmodel CarSubmodel { get; set; }
         public List<Part> Parts { get; set; }
+        public List<Subpart> Subparts { get; set; }
     }
 }
