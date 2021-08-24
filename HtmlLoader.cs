@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ilcatsParser
 {
-    class HtmlLoader
+    static class HtmlLoader
     {
         private const string baseUrl = "https://www.ilcats.ru/";
 

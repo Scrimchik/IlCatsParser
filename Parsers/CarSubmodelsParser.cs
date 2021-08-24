@@ -1,5 +1,6 @@
 ﻿using AngleSharp.Dom;
 using ilcatsParser.Ef;
+using ilcatsParser.Ef.DbHelpers;
 using ilcatsParser.Ef.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -9,20 +10,19 @@ using System.Threading.Tasks;
 
 namespace ilcatsParser.Parsers
 {
-    class CarSubmodelsParser
+    static class CarSubmodelsParser
     {
         /// <summary>
-        /// Parse car submodels elements and save their, and after this go to the next page
+        /// 
         /// </summary>
         /// <param name="carSubmodelsElement">Html element, with the List html class, which contains collections of car submodels data</param>
         /// <param name="carModelId">Id of CarModel line for establish a connection</param>
         /// <returns></returns>
         public static async Task ParseAndSaveAsync(IElement carSubmodelsElement, int carModelId)
         {
-            Console.WriteLine(" -----------------------------------------------");
             List<CarSubmodel> carSubmodels = new List<CarSubmodel>();
 
-            //Go in html List html class, which contains car submodel data
+            //Go in html List html element, which contains car submodel data
             foreach (var carSubmodelElement in carSubmodelsElement.Children)
             {
                 CarSubmodel carSubmodel = new CarSubmodel()

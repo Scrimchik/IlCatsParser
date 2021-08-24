@@ -1,6 +1,8 @@
 ﻿using AngleSharp.Html.Dom;
 using ilcatsParser.Ef;
+using ilcatsParser.Ef.DbHelpers;
 using ilcatsParser.Ef.Models;
+using ilcatsParser.Parsers.FileHelpers;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -9,13 +11,16 @@ using System.Threading.Tasks;
 
 namespace ilcatsParser.Parsers
 {
-    class PartParser
+    static class PartParser
     {
         public static async Task ParseAndSaveAsync(IHtmlDocument document, int subgroupId, int complectationId)
         {
-            Console.WriteLine("     -----------------------------------------------");
             var partElements = document.QuerySelectorAll("th").Where(t => t.ParentElement.HasAttribute("data-id"));
             List<Part> parts = new List<Part>();
+
+            string imageUrl = "https:" + document.QuerySelectorAll("img").FirstOrDefault(t => t.HasAttribute("usemap")).GetAttribute("src");
+            string imageName = partElements.FirstOrDefault()?.InnerHtml?.Split("&nbsp;")[0] ?? "no parts";
+            string photoWay = FileHelper.LoadAndSaveImage(imageUrl, imageName);
 
             foreach (var partElement in partElements)
             {
@@ -30,7 +35,8 @@ namespace ilcatsParser.Parsers
                     Code = partCode,
                     Name = partName,
                     SubgroupId = subgroupId,
-                    SubpartElements = subpartElements
+                    SubpartElements = subpartElements,
+                    PhotoWay = photoWay
                 };
 
                 parts.Add(part);

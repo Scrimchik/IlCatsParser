@@ -24,7 +24,7 @@ namespace ilcatsParser.Ef
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=helloappdb;Trusted_Connection=True;");
+            optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ilcatsparsedb;Trusted_Connection=True;");
         }
     }
 }

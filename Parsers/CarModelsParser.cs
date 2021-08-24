@@ -1,5 +1,6 @@
 ﻿using AngleSharp.Html.Dom;
 using ilcatsParser.Ef;
+using ilcatsParser.Ef.DbHelpers;
 using ilcatsParser.Ef.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -9,11 +10,10 @@ using System.Threading.Tasks;
 
 namespace ilcatsParser.Parsers
 {
-    class CarModelsParser
+    static class CarModelsParser
     {
         public static async Task ParseAndSaveAsync(IHtmlDocument document) 
         {
-            Console.WriteLine("-----------------------------------------------");
             var carModelElements = document.All.Where(t => t.ClassName == "List" && t.Children.Any(t => t.ClassName == "Header"));
             List<CarModel> carModels = new List<CarModel>();
 

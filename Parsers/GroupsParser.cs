@@ -1,19 +1,18 @@
 ﻿using AngleSharp.Html.Dom;
 using ilcatsParser.Ef;
+using ilcatsParser.Ef.DbHelpers;
 using ilcatsParser.Ef.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace ilcatsParser.Parsers
 {
-    class GroupsParser
+    static class GroupsParser
     {
         public static async Task ParseAndSaveAsync(IHtmlDocument document, int complectationId)
         {
-            Console.WriteLine("   -----------------------------------------------");
             var groupElements = document.All.Where(t => t.ClassName == "name");
             List<Group> groups = new List<Group>();
 

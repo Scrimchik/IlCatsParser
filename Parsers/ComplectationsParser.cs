@@ -1,6 +1,7 @@
 ﻿using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using ilcatsParser.Ef;
+using ilcatsParser.Ef.DbHelpers;
 using ilcatsParser.Ef.Models;
 using ilcatsParser.Parsers.ParserHelpers;
 using Microsoft.EntityFrameworkCore;
@@ -11,17 +12,10 @@ using System.Threading.Tasks;
 
 namespace ilcatsParser.Parsers
 {
-    class ComplectationsParser
+    static class ComplectationsParser
     {
-        /// <summary>
-        /// Parse complectation elements and save their, and after this go to the next page
-        /// </summary>
-        /// <param name="document"></param>
-        /// <param name="carSubmodelId"></param>
-        /// <returns></returns>
         public static async Task ParseAndSaveAsync(IHtmlDocument document, int carSubmodelId)
         {
-            Console.WriteLine("  -----------------------------------------------");
             var complectationElements = document.QuerySelector("tbody").Children;
 
             //get first <tr> element, which contains data of fields

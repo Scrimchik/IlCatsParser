@@ -5,20 +5,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ilcatsParser.Ef
+namespace ilcatsParser.Ef.DbHelpers
 {
-    class DbHelperForComplectationModelsSubparts
+    static class DbHelperForComplectationModelsParts
     {
-        public static async Task MakeRelationsASync(List<Subpart> subparts, int complectationId)
+        public static async Task MakeRelationsASync(List<Part> parts, int complectationId)
         {
             using (AppDbContext db = new AppDbContext())
             {
-                List<string> subpartCodes = FillTheSubpartCodes(subparts);
-                List<Subpart> subpartsFromDb = await db.Subparts.Where(t => subpartCodes.Contains(t.Code)).ToListAsync();
+                List<string> partCodes = FillThePartCodes(parts);
+                List<Part> partsFromDb = await db.Parts.Where(t => partCodes.Contains(t.Code)).ToListAsync();
                 ComplectationModel complectation = await db.ComplectationModels.FindAsync(complectationId);
 
-                foreach (var subpart in subpartsFromDb)
-                    subpart.ComplectationModels.Add(complectation);
+                foreach (var part in partsFromDb)
+                    part.ComplectationModels.Add(complectation);
 
                 try
                 {
@@ -30,13 +30,14 @@ namespace ilcatsParser.Ef
                 }
 
             }
+            
         }
 
-        private static List<string> FillTheSubpartCodes(List<Subpart> subparts)
+        private static List<string> FillThePartCodes(List<Part> parts)
         {
             List<string> result = new List<string>();
 
-            foreach (var part in subparts)
+            foreach (var part in parts)
             {
                 result.Add(part.Code);
             }

@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ilcatsParser.Ef
+namespace ilcatsParser.Ef.DbHelpers
 {
-    class DbHelper
+    static class DbHelper
     {
         public static bool IsFirstLoading { get; set; }
 

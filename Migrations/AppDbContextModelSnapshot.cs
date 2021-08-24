@@ -349,6 +349,9 @@ namespace ilcatsParser.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PhotoWay")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("SubgroupId")
                         .HasColumnType("int");
 

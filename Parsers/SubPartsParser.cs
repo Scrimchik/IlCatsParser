@@ -1,5 +1,5 @@
 ﻿using AngleSharp.Dom;
-using ilcatsParser.Ef;
+using ilcatsParser.Ef.DbHelpers;
 using ilcatsParser.Ef.Models;
 using System;
 using System.Collections.Generic;
@@ -7,11 +7,10 @@ using System.Threading.Tasks;
 
 namespace ilcatsParser.Parsers
 {
-    class SubPartsParser
+    static class SubPartsParser
     {
         public static async Task ParseAndSaveASync(IEnumerable<IElement> subpartElements, int partId, int complectationId)
         {
-            Console.WriteLine("      -----------------------------------------------");
             List<Subpart> subparts = new List<Subpart>();
 
             foreach (var subpartElement in subpartElements)
@@ -24,7 +23,7 @@ namespace ilcatsParser.Parsers
                 catch (Exception)
                 {
 
-                    //need because some of count may be cross
+                    //need because some of count fields may be cross
                 }
 
                 Subpart subpart = new Subpart
